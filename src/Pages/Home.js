@@ -12,7 +12,7 @@ function Home() {
 
   console.log(content, chatIDD);
   useEffect(() => {
-    console.log("useEffect called as chatID is changed", chatID, user);
+    console.log("useEffect called as chatID is changed to:-", chatID, user);
     if (!user) {
       navigate("/login");
       return;
