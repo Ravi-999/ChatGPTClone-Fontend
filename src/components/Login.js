@@ -14,6 +14,7 @@ function Login() {
     }
   }, [user]);
   const responseMessage = async (response) => {
+    console.log(response);
     const res = await fetch("http://localhost:3001/google/login", {
       method: "POST",
       headers: {
@@ -36,6 +37,13 @@ function Login() {
     console.log(error);
   };
 
+  const githubLoginHandler = () => {
+    window.location.assign(
+      "https://github.com/login/oauth/authorize?client_id=" +
+        process.env.REACT_APP_GITHUB_CLIENT_ID
+    );
+  };
+
   return (
     <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] border-[#666666]">
       <h2 className="ml-12 font-bold text-2xl">ChatGPT</h2>
@@ -44,6 +52,9 @@ function Login() {
       <div className="cursor-pointer">
         <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
       </div>
+      {/* <div>
+        <button onClick={githubLoginHandler}>Login with Github</button>
+      </div> */}
     </div>
   );
 }

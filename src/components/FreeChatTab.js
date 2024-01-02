@@ -3,6 +3,7 @@ import { useLoaderData, useParams } from "react-router-dom";
 import Logo from "../images/Logo copy.svg";
 
 function FreeChatTab() {
+  console.log("called");
   const { chat, picture, name } = useLoaderData();
   const { content } = chat;
   return (
@@ -54,6 +55,7 @@ export const getSharedChatData = async ({ request, params }) => {
       "Content-Type": "application/json",
     },
   });
+  if (response.status !== 200) throw new Error("page Expired");
   return response.json();
 };
 export default FreeChatTab;
