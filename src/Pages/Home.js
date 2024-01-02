@@ -11,7 +11,7 @@ import ForkModal from "../components/ForkModal";
 function Home() {
   const { chatID } = useParams();
   const navigate = useNavigate();
-  const { addContent, content, getContent, user, chatID: chatIDD } = useAuth();
+  const { addContent, content, getContent, user } = useAuth();
   const [shareModal, setShareModal] = useState(false);
   const [forkModal, setForkModal] = useState(false);
   const [message, setMessage] = useState("");
