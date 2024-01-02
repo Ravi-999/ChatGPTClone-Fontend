@@ -9,21 +9,24 @@ const AuthContextProvider = ({ children }) => {
   const [chatHistory, setChatHistory] = useState([]);
   const [content, setContent] = useState([]);
   const [chatID, setChatID] = useState(null);
+  const [shareID, setShareID] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("chatToken");
-    console.log(token);
+    console.log(token, user);
     if (!token) {
       console.log("redirecting the user");
       navigate("/login");
+      setIsLoading(false);
       return;
     }
     userOnLoad();
-  }, []);
+  }, [user]);
 
   const userOnLoad = () => {
+    setIsLoading(true);
     Promise.all([
       getHistory(),
       getContent(),
@@ -37,7 +40,7 @@ const AuthContextProvider = ({ children }) => {
     const payload = { question };
     if (content.length === 0) {
       const newID = UUID();
-      const newURL = `${window.location.href}${newID}`;
+      const newURL = `${window.location.origin}/c/${newID}`;
       window.history.pushState({}, null, newURL);
       payload.chatID = newID;
     } else {
@@ -62,8 +65,8 @@ const AuthContextProvider = ({ children }) => {
     if (content.length === 0) {
       setChatID(payload.chatID);
       setChatHistory((prevState) => [
-        ...prevState,
         { chatID: payload.chatID, chatDescription: question },
+        ...prevState,
       ]);
     }
   };
@@ -79,7 +82,7 @@ const AuthContextProvider = ({ children }) => {
   };
 
   const getHistory = async () => {
-    console.log("history called");
+    console.log("history called", localStorage.getItem("chatToken"));
     const response = await fetch("http://localhost:3001/c/history", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
@@ -104,17 +107,24 @@ const AuthContextProvider = ({ children }) => {
       },
     });
     checkRedirection(response);
-    const chatArray = await response.json();
-    console.log("Got content", chatArray, chatID, chatId);
+    const data = await response.json();
+    console.log(data);
+    const { content: contentArray, shareID } = data;
+    console.log("Got content", contentArray, chatID, chatId, shareID);
     if (!chatID) {
       console.log("got the chatID", chatId);
       setChatID(chatId);
     }
-    setContent(chatArray);
+    setContent(contentArray);
+    setShareID(shareID);
   };
 
   const getUserDetails = async () => {
-    console.log("userDetails called");
+    console.log(
+      "userDetails called for:-",
+      user,
+      localStorage.getItem("chatToken")
+    );
     const response = await fetch("http://localhost:3001/c/getUser", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
@@ -124,13 +134,32 @@ const AuthContextProvider = ({ children }) => {
     checkRedirection(response);
     const data = await response.json();
     console.log("userData", data);
-    const { fullName: name, email } = data;
-    console.log("Got the user", name, email);
-    setUserDetails({ name, email });
+    const { fullName: name, email, picture, userID } = data;
+    console.log("Got the user", name, email, picture, userID);
+    setUserDetails({ name, email, picture, userID });
   };
 
   const setUserDetails = (user) => {
     setUser(user);
+  };
+
+  const deleteChat = async () => {
+    const response = await fetch("http://localhost:3001/c/deleteChat", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ chatID }),
+    });
+    checkRedirection(response);
+    await response.json();
+    setChatHistory((prevState) => [
+      ...prevState.filter((chatItem) => chatItem.chatID !== chatID),
+    ]);
+    setChatID(null);
+    setContent([]);
+    navigate("/");
   };
 
   const checkRedirection = (response) => {
@@ -140,16 +169,83 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const getShareLink = async (isNew) => {
+    if (!isNew && shareID) {
+      await navigator.clipboard.writeText(
+        `${window.location.origin}/share/${shareID}`
+      );
+      return;
+    }
+    const response = await fetch(
+      `http://localhost:3001/c/sharedlink/${chatID}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const { shareID: newShareID } = await response.json();
+    console.log(
+      "getting share link",
+      chatID,
+      "the shareID i got:- ",
+      newShareID
+    );
+    console.log("content for this IDs", content);
+    console.log(`${window.location.origin}/share/${newShareID}`);
+    await navigator.clipboard.writeText(
+      `${window.location.origin}/share/${newShareID}`
+    );
+    setShareID(newShareID);
+  };
+
+  const getForkedChat = async (link) => {
+    console.log("forked Link", link);
+    let regex =
+      /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})[^/]*$/;
+    let match = link.match(regex);
+    let shareID = match[1];
+    console.log("forking the chat having shareID :-", shareID);
+    const response = await fetch(
+      `http://localhost:3001/c/fork/forkChat/${shareID}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    checkRedirection(response);
+    const chatData = await response.json();
+    console.log(chatData);
+    setChatHistory((prevState) => [
+      {
+        chatID: chatData.chatID,
+        chatDescription: chatData.chatDescription,
+      },
+      ...prevState,
+    ]);
+    setContent(chatData.content);
+    setChatID(chatData.chatID);
+    return chatData.chatID;
+  };
+
   const contextData = {
     content,
     chatHistory,
     addContent,
+    deleteChat,
     clearContent,
     getContent,
     setChatID,
     setUserDetails,
     user,
     chatID,
+    shareID,
+    getShareLink,
+    getForkedChat,
+    userOnLoad,
   };
   return (
     <AuthContext.Provider value={contextData}>

@@ -5,9 +5,10 @@ import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
-  const { user, setUserDetails } = useAuth();
+  const { user, setUserDetails, userOnLoad } = useAuth();
   useEffect(() => {
-    if (user) {
+    if (localStorage.getItem("chatToken") && user) {
+      userOnLoad();
       navigate("/");
       return;
     }
@@ -24,10 +25,10 @@ function Login() {
       console.log("forbidden anta gaß");
       throw Error("Invalid Credentials");
     }
-    const { token, name, email } = await res.json();
+    const { token, name, email, picture, userID } = await res.json();
     localStorage.setItem("chatToken", token);
 
-    setUserDetails({ name, email });
+    setUserDetails({ name, email, picture, userID });
     navigate("/");
   };
 
@@ -36,11 +37,13 @@ function Login() {
   };
 
   return (
-    <div>
-      <h2>React Google Login</h2>
+    <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] border-[#666666]">
+      <h2 className="ml-12 font-bold text-2xl">ChatGPT</h2>
       <br />
       <br />
-      <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+      <div className="cursor-pointer">
+        <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+      </div>
     </div>
   );
 }
