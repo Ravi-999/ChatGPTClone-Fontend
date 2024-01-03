@@ -10,7 +10,7 @@ function Login() {
 
   useEffect(() => {
     if (localStorage.getItem("chatToken") && user) {
-      userOnLoad(location.state.shareID);
+      userOnLoad(location?.state?.shareID);
       navigate("/");
       return;
     }

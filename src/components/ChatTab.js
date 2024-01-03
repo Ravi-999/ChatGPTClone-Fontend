@@ -4,8 +4,8 @@ import Logo from "../images/Logo copy.svg";
 import OrgLogo from "../images/Logo.svg";
 
 function ChatTab({ content }) {
-  const { user } = useAuth();
-  if (content?.length === 0)
+  const { user, chatID } = useAuth();
+  if (content?.length === 0 && !chatID)
     return (
       <div className="absolute top-[40%] left-[50%]">
         <img

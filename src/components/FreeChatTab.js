@@ -53,7 +53,7 @@ function FreeChatTab() {
               <div className="mt-6">
                 <img className="inline-block h-6 w-6 rounded-full" src={user} />
                 <p className="inline-block ml-2 text-[#ECECF1] font-bold">
-                  You
+                  Anonymous
                 </p>
                 <p className="ml-8 text-[#AFB2B8]">{Item.question}</p>
               </div>
