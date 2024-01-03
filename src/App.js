@@ -10,19 +10,21 @@ import MainLayout from "./components/MainLayout";
 import Login from "./components/Login";
 import FreeChatTab, { getSharedChatData } from "./components/FreeChatTab";
 import GithubCallback from "./components/GithubCallback";
+import ErrorPage from "./components/ErrorPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route
         path={"/"}
-        errorElement={<p>An Error Occurred</p>}
+        errorElement={<p>Page Expired</p>}
         element={<MainLayout />}
       >
         <Route index element={<Home />}></Route>
         <Route path={"/c/:chatID"} element={<Home />}></Route>
         <Route path={"/login"} element={<Login />}></Route>
         <Route path={"/callback"} element={<GithubCallback />}></Route>
+        <Route path="/error" element={<ErrorPage />}></Route>
       </Route>
       <Route
         path={"/share/:shareID"}

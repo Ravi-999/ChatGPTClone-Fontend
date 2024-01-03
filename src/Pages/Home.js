@@ -63,17 +63,27 @@ function Home() {
           </h1>
           <div>
             {chatID && (
-              <img
-                className="h-9 w-9 opacity-65 border border-solid-[#666666] p-2 rounded-md cursor-pointer"
-                src={shareIcon}
+              <button
+                className="border border-solid border-[#666666] rounded-md p-2"
                 onClick={() => setShareModal((prevState) => !prevState)}
-              />
+              >
+                <span className="mr-1">Share Chat</span>
+                <img
+                  className="h-9 w-9 opacity-65  p-2 rounded-md cursor-pointer inline-block"
+                  src={shareIcon}
+                />
+              </button>
             )}
-            <img
-              className="h-9 w-9 opacity-65 border border-solid-[#666666] p-2 rounded-md cursor-pointer mt-2 bg-[#fff]"
-              src={fork}
+            <button
+              className="border border-solid border-[#666666] rounded-md px-3 py-2 block mt-2"
               onClick={() => setForkModal((prevState) => !prevState)}
-            />
+            >
+              <span className="mr-2 inline-block align-middle">Fork Chat</span>
+              <img
+                className="h-8 w-8 opacity-65 border border-solid-[#666666] p-2 rounded-md cursor-pointer mt-2 bg-[#fff] inline-block align-middle"
+                src={fork}
+              />
+            </button>
           </div>
         </div>
         <div className="h-[100vh] mx-auto w-[60%]">

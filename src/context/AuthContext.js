@@ -216,34 +216,39 @@ const AuthContextProvider = ({ children }) => {
   };
 
   const getForkedChat = async (link) => {
-    console.log("forked Link", link);
-    let regex =
-      /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})[^/]*$/;
-    let match = link.match(regex);
-    let shareID = match[1];
-    console.log("forking the chat having shareID :-", shareID);
-    const response = await fetch(
-      `${process.env.REACT_APP_BACKEND_URL}/c/fork/forkChat/${shareID}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
-          "Content-Type": "application/json",
+    try {
+      console.log("forked Link", link);
+      let regex =
+        /([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})[^/]*$/;
+      let match = link.match(regex);
+      let shareID = match[1];
+      console.log("forking the chat having shareID :-", shareID);
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}/c/fork/forkChat/${shareID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      checkRedirection(response);
+      const chatData = await response.json();
+      console.log(chatData);
+      setChatHistory((prevState) => [
+        {
+          chatID: chatData.chatID,
+          chatDescription: chatData.chatDescription,
         },
-      }
-    );
-    checkRedirection(response);
-    const chatData = await response.json();
-    console.log(chatData);
-    setChatHistory((prevState) => [
-      {
-        chatID: chatData.chatID,
-        chatDescription: chatData.chatDescription,
-      },
-      ...prevState,
-    ]);
-    setContent(chatData.content);
-    setChatID(chatData.chatID);
-    return chatData.chatID;
+        ...prevState,
+      ]);
+      setContent(chatData.content);
+      setChatID(chatData.chatID);
+      return chatData.chatID;
+    } catch (err) {
+      navigate("/error");
+      // throw new Error("Unable to fork, please paste correct link");
+    }
   };
 
   const contextData = {
