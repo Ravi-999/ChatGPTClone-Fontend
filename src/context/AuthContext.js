@@ -83,12 +83,15 @@ const AuthContextProvider = ({ children }) => {
 
   const getHistory = async () => {
     console.log("history called", localStorage.getItem("chatToken"));
-    const response = await fetch(`${process.env.BACKEND_URL}/c/history`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/c/history`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     checkRedirection(response);
     //fetch call to get entire history
     const history = await response.json();
@@ -125,12 +128,15 @@ const AuthContextProvider = ({ children }) => {
       user,
       localStorage.getItem("chatToken")
     );
-    const response = await fetch(`${process.env.BACKEND_URL}/c/getUser`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/c/getUser`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     checkRedirection(response);
     const data = await response.json();
     console.log("userData", data);
@@ -177,7 +183,7 @@ const AuthContextProvider = ({ children }) => {
       return;
     }
     const response = await fetch(
-      `${process.env.BACKEND_URL}/c/sharedlink/${chatID}`,
+      `${process.env.REACT_APP_BACKEND_URL}/c/sharedlink/${chatID}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
@@ -208,7 +214,7 @@ const AuthContextProvider = ({ children }) => {
     let shareID = match[1];
     console.log("forking the chat having shareID :-", shareID);
     const response = await fetch(
-      `${process.env.BACKEND_URL}/c/fork/forkChat/${shareID}`,
+      `${process.env.REACT_APP_BACKEND_URL}/c/fork/forkChat/${shareID}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
