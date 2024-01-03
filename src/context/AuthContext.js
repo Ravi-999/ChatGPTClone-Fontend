@@ -47,14 +47,17 @@ const AuthContextProvider = ({ children }) => {
       payload.chatID = chatID;
     }
     // const answer = await callAPI();
-    const response = await fetch("http://localhost:3001/c/answer", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
-      },
-      body: JSON.stringify(payload),
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/c/answer`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
+        },
+        body: JSON.stringify(payload),
+      }
+    );
     checkRedirection(response);
     const { randomAnswer } = await response.json();
     setContent((prevState) => [
@@ -103,12 +106,15 @@ const AuthContextProvider = ({ children }) => {
     console.log(content);
     console.log("get content called");
     if (!chatId && !chatID) return;
-    const response = await fetch(`http://localhost:3001/c/getChat/${chatId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/c/getChat/${chatId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     checkRedirection(response);
     const data = await response.json();
     console.log(data);
@@ -150,14 +156,17 @@ const AuthContextProvider = ({ children }) => {
   };
 
   const deleteChat = async () => {
-    const response = await fetch("http://localhost:3001/c/deleteChat", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ chatID }),
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/c/deleteChat`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ chatID }),
+      }
+    );
     checkRedirection(response);
     await response.json();
     setChatHistory((prevState) => [

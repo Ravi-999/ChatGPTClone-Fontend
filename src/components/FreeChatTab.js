@@ -49,12 +49,15 @@ function FreeChatTab() {
 
 export const getSharedChatData = async ({ request, params }) => {
   const { shareID } = params;
-  const response = await fetch(`${process.env.BACKEND_URL}/share/${shareID}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(
+    `${process.env.REACT_APP_BACKEND_URL}/share/${shareID}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
   if (response.status !== 200) throw new Error("page Expired");
   return response.json();
 };
