@@ -14,6 +14,14 @@ const AuthContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log(window.location.pathname);
+    // if (window.location.pathname.includes("share")) {
+    //   const shareUrl = window.location.pathname.substring(1);
+    //   console.log("hiie");
+    //   navigate(`${shareUrl}`);
+    //   setIsLoading(false);
+    //   return;
+    // }
     const token = localStorage.getItem("chatToken");
     console.log(token, user);
     if (!token) {
@@ -25,13 +33,19 @@ const AuthContextProvider = ({ children }) => {
     userOnLoad();
   }, [user]);
 
-  const userOnLoad = () => {
+  const userOnLoad = (shareID) => {
     setIsLoading(true);
     Promise.all([
       getHistory(),
       getContent(),
       user ? Promise.resolve() : getUserDetails(),
-    ]).then(() => {
+    ]).then(async () => {
+      if (shareID) {
+        const newChatID = await getForkedChat(
+          `${window.location.origin}/share/${shareID}`
+        );
+        if (newChatID) navigate(`/c/${newChatID}`);
+      }
       setIsLoading(false);
     });
   };

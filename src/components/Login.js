@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
   const { user, setUserDetails, userOnLoad } = useAuth();
+  const location = useLocation();
+
   useEffect(() => {
     if (localStorage.getItem("chatToken") && user) {
-      userOnLoad();
+      userOnLoad(location.state.shareID);
       navigate("/");
       return;
     }
