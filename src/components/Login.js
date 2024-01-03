@@ -15,13 +15,16 @@ function Login() {
   }, [user]);
   const responseMessage = async (response) => {
     console.log(response);
-    const res = await fetch("http://localhost:3001/google/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(response),
-    });
+    const res = await fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/google/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(response),
+      }
+    );
     if (res.status === 401 || res.status === 403) {
       console.log("forbidden anta gaß");
       throw Error("Invalid Credentials");
