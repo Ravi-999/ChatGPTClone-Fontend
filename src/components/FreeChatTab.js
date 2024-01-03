@@ -49,7 +49,7 @@ function FreeChatTab() {
 
 export const getSharedChatData = async ({ request, params }) => {
   const { shareID } = params;
-  const response = await fetch(`http://localhost:3001/share/${shareID}`, {
+  const response = await fetch(`${process.env.BACKEND_URL}/share/${shareID}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
       "Content-Type": "application/json",

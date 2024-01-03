@@ -83,7 +83,7 @@ const AuthContextProvider = ({ children }) => {
 
   const getHistory = async () => {
     console.log("history called", localStorage.getItem("chatToken"));
-    const response = await fetch("http://localhost:3001/c/history", {
+    const response = await fetch(`${process.env.BACKEND_URL}/c/history`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
         "Content-Type": "application/json",
@@ -125,7 +125,7 @@ const AuthContextProvider = ({ children }) => {
       user,
       localStorage.getItem("chatToken")
     );
-    const response = await fetch("http://localhost:3001/c/getUser", {
+    const response = await fetch(`${process.env.BACKEND_URL}/c/getUser`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
         "Content-Type": "application/json",
@@ -177,7 +177,7 @@ const AuthContextProvider = ({ children }) => {
       return;
     }
     const response = await fetch(
-      `http://localhost:3001/c/sharedlink/${chatID}`,
+      `${process.env.BACKEND_URL}/c/sharedlink/${chatID}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
@@ -208,7 +208,7 @@ const AuthContextProvider = ({ children }) => {
     let shareID = match[1];
     console.log("forking the chat having shareID :-", shareID);
     const response = await fetch(
-      `http://localhost:3001/c/fork/forkChat/${shareID}`,
+      `${process.env.BACKEND_URL}/c/fork/forkChat/${shareID}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("chatToken")}`,
