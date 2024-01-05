@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Navigate,
-  useLoaderData,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import Logo from "../images/Logo copy.svg";
 import fork from "../images/gitFork.svg";
 import user from "../images/user.svg";
